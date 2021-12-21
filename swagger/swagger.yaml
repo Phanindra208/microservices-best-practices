@@ -1,0 +1,443 @@
+swagger: "2.0"
+info:
+  description: microservice API
+  version: 1.0.0
+  title: microservice API
+basePath: /
+schemes:
+  - http
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+
+paths:
+  /liveness:
+    get:
+      tags:
+        - Health
+      operationId: Liveness
+      responses:
+        204:
+          description: No content
+
+  /readiness:
+    get:
+      tags:
+        - Health
+      operationId: Readiness
+      responses:
+        204:
+          description: No content
+  
+  /users:
+    get:
+      tags:
+        - users
+      summary: Get users
+      operationId: Get_Users
+      description: Get All Users
+     
+      responses:
+        200:
+          description: Get users
+          schema:
+            $ref: '#/definitions/users'
+        400:
+          description: |
+            Bad request <br>
+           
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Internal error 
+           
+  /user:
+    post:
+      tags:
+        - users
+      summary: create user
+      operationId:  Create_User
+      description:  create user
+      parameters:
+        - in: body
+          required: true
+          name: payload
+          schema:
+            $ref: '#/definitions/user'
+      responses:
+        200:
+          description: No content   
+        400:
+          description: |
+            Bad request <br>
+           
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Internal error        
+  /follow:
+    post:
+      tags:
+        - users
+      summary: follow user
+      operationId:  Follow_User
+      description:  follow user
+      parameters:
+        - in: body
+          required: true
+          name: payload
+          schema:
+            $ref: '#/definitions/frend_request'
+      responses:
+        200:
+         description: No content
+        400:
+          description: |
+            Bad request <br>
+           
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Internal error   
+  /un-follow:
+    post:
+      tags:
+        - users
+      summary: un-follow user
+      operationId:  Un_Follow_User
+      description:  un-follow user
+      parameters:
+        - in: body
+          required: true
+          name: payload
+          schema:
+            $ref: '#/definitions/frend_request'
+      responses:
+        200:
+          description: No content
+        400:
+          description: |
+            Bad request <br>
+           
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Internal error 
+  /feed-post:
+    post:
+      tags:
+        - feed
+      summary: post feed
+      operationId:  Create_Feed
+      description:  postfeed
+      parameters:
+        - in: body
+          required: true
+          name: payload
+          schema:
+            $ref: '#/definitions/feed_post'
+      responses:
+        200:
+          description: No content
+        400:
+          description: |
+            Bad request <br>
+            
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Internal error 
+  /user-feed:
+    post:
+      tags:
+        - feed
+      summary: user feed
+      operationId:  User_Feed
+      description:  user feed
+      parameters:
+        - in: query
+          type: string
+          name: user_email_id
+        - in: body
+          required: true
+          name: payload
+          schema:
+            $ref: '#/definitions/pagestate'
+      responses:
+        200:
+          description: Successfully user feed
+          schema:
+            $ref: '#/definitions/users_feed'
+        400:
+          description: |
+            Bad request <br>
+           
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Internal error 
+  /friends-feed:
+    post:
+      tags:
+        - feed
+      summary: friends feed
+      operationId:  Friends_Feed
+      description:  Friends Feed
+      parameters:
+        - in: query
+          type: string
+          name: user_email_id
+        - in: body
+          required: true
+          name: payload
+          schema:
+            $ref: '#/definitions/pagestate'
+      responses:
+        200:
+          description: Successfully user feed
+          schema:
+            $ref: '#/definitions/friends_feed'
+        400:
+          description: |
+            Bad request <br>
+            
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Internal error 
+  /relates:
+    post:
+        tags:
+          - feed
+        summary: related feed 
+        operationId: Get_Related_Feed
+        description: related feed response
+        parameters:
+            - in: query
+              type: string
+              name: user_email_id
+            - in: body
+              required: true
+              name: payload
+              schema:
+               $ref: '#/definitions/pagestate'
+        responses:
+            200:
+              description: Successfully got loyalty points
+              schema:
+                $ref: '#/definitions/related_feed_response'
+            400:
+              description: |
+                Bad request <br>
+               
+              schema:
+                $ref: '#/definitions/ErrorResponse'
+            401:
+              description: Unauthorized
+              schema:
+                $ref: "#/definitions/ErrorResponse"
+            500:
+              description: Internal error 
+           
+
+
+definitions:
+
+  ErrorResponse:
+    description: Error response body for 4xx responses
+    properties:
+      code:
+        description: |
+          6xx if validation error.
+          1000+ for special errors.
+          Otherwise, normal HTTP status codes apply.
+        type: integer
+      message:
+        description: Informative text - not for error checking
+        type: string
+      validation:
+        description: Details about validation error
+        type: object
+        properties:
+          param:
+            description: The parameter name which caused the error
+            type: string
+          code:
+            description: Error code for validation error - like error_code
+            type: string  
+  user:
+    description: User structure
+    properties:
+      user_email_id:
+        type: string
+        x-go-name: user_email_id
+      reg_date:
+        type: string
+        x-go-name: reg_date 
+      friends:
+       items:
+         type: string
+       type: array
+      
+    type: object
+    x-go-package: github.com/iAmPlus/microservice/models  
+  users:
+    description: list of Users structure
+    properties:
+      User:
+        items:
+          $ref: '#/definitions/user'
+        type: array
+    type: object
+    x-go-package: github.com/iAmPlus/hotels/models
+  frend_request:
+    description: User structure
+    properties:
+      source_user_email_id:
+        type: string
+        x-go-name: source_user_email_id
+      target_user_email_id:
+        type: string
+        x-go-name: target_user_email_id
+      
+    type: object
+    x-go-package: github.com/iAmPlus/microservice/models 
+  feed_post:
+    description: feed post
+    properties:
+      actor:
+        type: string
+        x-go-name: actor
+      verb:
+        type: string
+        x-go-name: verb
+      object:
+        type: string
+        x-go-name: object
+      target:
+        type: string
+        x-go-name: target
+      createdat:
+        type: string
+        format: date-time
+        x-go-name: createdat
+    type: object
+    x-go-package: github.com/iAmPlus/microservice/models 
+      
+  users_feed:
+    description: list of Users structure
+    properties:
+      my_feed:
+        items:
+          $ref: '#/definitions/feed_post'
+        type: array
+      page_state:
+          $ref: '#/definitions/pagination_data'
+    type: object
+    x-go-package: github.com/iAmPlus/hotels/models
+  friends_feed:
+    description: list of Users structure
+    properties:
+      friends_feed:
+        items:
+          $ref: '#/definitions/feed_post'
+        type: array
+      page_state:
+          $ref: '#/definitions/pagination_data'
+    type: object
+    x-go-package: github.com/iAmPlus/hotels/models
+  related_feed:
+    description: list of Users structure
+    properties:
+      actor:
+        type: string
+        x-go-name: actor
+      verb:
+        type: string
+        x-go-name: verb
+      object:
+        type: string
+        x-go-name: object
+      target:
+        type: string
+        x-go-name: target
+      related:
+        items:
+          $ref: '#/definitions/feed_post'
+        type: array
+    type: object
+    x-go-package: github.com/iAmPlus/hotels/models
+  related_feed_response:
+    description: related_feed structure
+    properties:
+        related_feed:
+          items:
+            $ref: '#/definitions/related_feed'
+          type: array
+
+        page_state:
+          $ref: '#/definitions/pagination_data'
+    type: object
+    x-go-package: github.com/iAmPlus/hotels/models
+  pagestate:
+    properties:
+      pageid:
+        format: int64
+        type: integer
+        x-go-name: PageID
+      pagesize:
+        format: int64
+        type: integer
+        x-go-name: PageSize
+    type: object
+    x-go-name: PageState  
+  pagination_data:
+    properties:
+      page:
+        format: int64
+        type: integer
+        x-go-name: Page
+      perPage:
+        format: int64
+        type: integer
+        x-go-name: PerPage
+      total:
+        format: int64
+        type: integer
+        x-go-name: Total
+      totalPage:
+        format: int64
+        type: integer
+        x-go-name: TotalPage
+    type: object
+    x-go-package: github.com/iAmPlus/skill-news-go/common

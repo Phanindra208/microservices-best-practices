@@ -1,0 +1,10 @@
+FROM scratch
+# Add certs if any
+# ADD ca-certificates.crt /etc/ssl/certs/
+ADD skill-news-go /
+ENV PORT 8888
+EXPOSE 8888
+ENTRYPOINT ["/skill-news-go"]
+
+# To build this image 
+# Run: CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o skill-news-go . && docker build --rm -f Dockerfile.prod -t skill-news-go:latest .
